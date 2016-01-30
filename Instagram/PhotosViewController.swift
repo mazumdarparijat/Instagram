@@ -8,6 +8,7 @@
 
 import UIKit
 import AFNetworking
+import MBProgressHUD
 
 class PhotosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -19,6 +20,7 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = 320
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         
         let clientID = "e05c462ebd86446ea48a5af73769b602"
         let url = NSURL(string: "https://api.instagram.com/v1/media/popular?client_id=\(clientID)")
@@ -31,6 +33,7 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
         let task : NSURLSessionDataTask = session.dataTaskWithRequest(request,
             completionHandler: { (dataOrNil, response, error) in
                 if let data = dataOrNil {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
                     if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary {
                         self.photos = responseDictionary["data"] as? [NSDictionary]
                         self.tableView.reloadData()
